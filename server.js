@@ -1,7 +1,6 @@
 'use strict'
 
 const express = require('express');
-const res = require('express/lib/response');
 const movieData = require("./data.json");
 const app = express();
 const port = 3000;

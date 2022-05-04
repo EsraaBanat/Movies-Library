@@ -3,13 +3,22 @@
 require('dotenv').config()
 const express = require('express');
 const cors = require("cors");
+const bodyParser = require('body-parser');
 const axios = require('axios').default;
 const apiKey = process.env.API_KEY ;
+const userName = process.env.USER_NAME ;
+const password = process.env.PASSWORD ;
 const movieData = require("./data.json");
 const app = express();
 const PORT = 3000;
+const url = `postgres://${userName}:${password}@localhost:5432/movies`;
+const { Client } = require('pg');
+const client = new Client(url);
 
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 app.get("/", handleHomePage);
 app.get("/favorite", handleFavorite);
 app.get("/error", (req, res) => res.send(error()));
@@ -17,6 +26,8 @@ app.get('/trending', handleTrending);
 app.get('/search', handleSearch);
 app.get('/toprated', handleTop);
 app.get('/upcoming', handleUpcoming);
+app.post('/addMovie', handleAdd);
+app.get('/getMovie', handleGet);
 
 
 app.use(function (err, req, res, text){
@@ -25,8 +36,13 @@ app.use(function (err, req, res, text){
     res.status(500)
     res.send(`Sorry, something went wrong`)
 })
-app.listen(PORT, () => {
+
+client.connect().then(() => {
+
+  app.listen(PORT, () => {
     console.log(`Server is listening on PORT ${PORT}`)
+  });
+
 });
 
 
@@ -111,7 +127,26 @@ function handleUpcoming(req ,res) {
             res.send("Inside catch");
         })
 
- }
+}
+function handleAdd(req, res) {
+  // console.log(req.body);
+  // res.send('Adding to DB in progress');
+  const { id,title,release_date,poster_path,overview,personal_comments } = req.body;
+  let sql = 'INSERT INTO movie(id,title,release_date,poster_path,overview,personal_comments ) VALUES($1,$2,$3,$4,$5,$6) RETURNING *;';
+  let values = [id,title,release_date,poster_path,overview,personal_comments];
+  client.query(sql, values).then((result) => {
+     console.log(result.rows);
+    return res.status(201).json(result.rows[0]);
+  }).catch()
+}
+ 
+function handleGet(req, res) {
+    let sql = 'SELECT * from movie;'
+    client.query(sql).then((result) => {
+        console.log(result);
+        res.json(result.rows);
+    }).catch();
+}
 
  function Movie(id ,title , date , path , overview) {
      this.id = id;

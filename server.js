@@ -28,6 +28,9 @@ app.get('/toprated', handleTop);
 app.get('/upcoming', handleUpcoming);
 app.post('/addMovie', handleAdd);
 app.get('/getMovie', handleGet);
+app.put('/UPDATE/:movieId', handleUpdate);
+app.delete('/DELETE/:movieId', handleDelete);
+app.get('/getMovie/:movieId', handleSelect);
 
 
 app.use(function (err, req, res, text){
@@ -129,15 +132,17 @@ function handleUpcoming(req ,res) {
 
 }
 function handleAdd(req, res) {
+
   // console.log(req.body);
   // res.send('Adding to DB in progress');
   const { id,title,release_date,poster_path,overview,personal_comments } = req.body;
   let sql = 'INSERT INTO movie(id,title,release_date,poster_path,overview,personal_comments ) VALUES($1,$2,$3,$4,$5,$6) RETURNING *;';
   let values = [id,title,release_date,poster_path,overview,personal_comments];
   client.query(sql, values).then((result) => {
-     console.log(result.rows);
+    console.log(result.rows);
     return res.status(201).json(result.rows[0]);
   }).catch()
+
 }
  
 function handleGet(req, res) {
@@ -146,6 +151,50 @@ function handleGet(req, res) {
         console.log(result);
         res.json(result.rows);
     }).catch();
+}
+
+function handleUpdate(req, res) {
+
+   const { movieId } = req.params;
+   console.log(movieId);
+   const { id , title , release_date , poster_path , overview , personal_comments } = req.body;
+
+    let sql = `UPDATE movie SET id = $1, title = $2, release_date = $3, poster_path = $4 ,overview = $5 , personal_comments=$6 WHERE id = $1 RETURNING *;`
+    let values = [id , title , release_date , poster_path , overview , personal_comments ];
+
+    client.query(sql, values).then(result => {
+        console.log(result.rows);
+        // res.send("Data Updated");
+        res.json(result.rows[0]);
+    }
+
+    ).catch(error => {
+        console.log(error);
+    })
+  
+}
+function handleDelete(req, res) {
+    const { movieId } = req.params;
+    // console.log(movieId);
+    let sql = 'DELETE FROM movie WHERE id=$1;'
+    let value = [movieId];
+    client.query(sql, value).then(result => {
+        // console.log(result.rows);
+        res.send("Data had deleted");
+    }
+    ).catch(error => {
+        console.log(error);
+    })
+}
+function handleSelect(req, res) {
+  const { movieId } = req.params;
+  // console.log( typeof movieId);
+  let sql = `SELECT * FROM movie WHERE id = '${movieId}'`;
+  client.query(sql).then((result) => {
+    res.json(result.rows);
+  }).catch(error => {
+    console.log(error);
+  })
 }
 
  function Movie(id ,title , date , path , overview) {

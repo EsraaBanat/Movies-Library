@@ -20,7 +20,7 @@ Movies-Library app that can check the latest movies based on categories,send get
 3. Create a new branch
 4. Create basic file structure (server.js, .gitignore, .eslintrc.json )
 5. Install the required packages for this task: npm install express,cors,pg,axios,body-parser,dotenv.
-6. Create a routes using grt and post methods.
+6. Create a routes using get , post , put and delete methods.
 7. Create a constructor function to ensure your data follow the same format.
 8. Create a function to handle the server error (status 500)
 9. Create a function to handle "page not found error" (status 404)
@@ -29,6 +29,9 @@ Movies-Library app that can check the latest movies based on categories,send get
 12. Create a function to handle the 3rd party API and database calls
 13. create a post request to save a specific movie to database
 14. Create a get request to get all the data from the database
+15. Create a put request to update specific data
+16. Create a delete request to delete data from the database
+17. Create a get request to got specific data by ID from the database
 
 
 ## Project Features
@@ -36,13 +39,16 @@ Movies-Library app that can check the latest movies based on categories,send get
 * Get your Favorite , Trending , Top Rated and Upcoming Movies. 
 * Search about movies you interested in.
 * Add any movies do you want to our Database.
+* Add your personal comment about any movie do you want.
+* update your personal comment.
+* delet any movie data do you want.
 
 Question For Task:
 
 * What observations or questions do you have about what you’ve learned so far?
 
-  I think the stuffs be clear more and more
+  no thing so far
 
 * How long did it take you to complete this assignment? And, before you started, how long did you think it would take you to complete this assignment? 
 
-  around 4 hours
+  around 3 hours

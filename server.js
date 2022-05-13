@@ -10,10 +10,16 @@ const userName = process.env.USER_NAME ;
 const password = process.env.PASSWORD ;
 const movieData = require("./data.json");
 const app = express();
-const PORT = 3000;
+const port = process.env.PORT ;
+// const PORT = ;
 const url = `postgres://${userName}:${password}@localhost:5432/movies`;
 const { Client } = require('pg');
-const client = new Client(url);
+// const client = new Cli
+
+const client = new Client({
+   connectionString: process.env.DATABASE_URL,
+   ssl: { rejectUnauthorized: false }
+});
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -42,8 +48,8 @@ app.use(function (err, req, res, text){
 
 client.connect().then(() => {
 
-  app.listen(PORT, () => {
-    console.log(`Server is listening on PORT ${PORT}`)
+  app.listen(port, () => {
+    console.log(`Server is listening on port ${port}`)
   });
 
 });
